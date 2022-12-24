@@ -4,7 +4,7 @@ import { getPostgresUsers } from "../db/postgres/getUsers";
 import { insertPostgresUser } from "../db/postgres/insertUser";
 
 export const getUsers = async (lastUserId?: string) => ({
-  mongoUsers: await getMongoDbUsers(lastUserId),
+  mongoUsers: await getMongoDbUsers({ lastUserId }),
   postgresUsers: await getPostgresUsers(lastUserId),
 });
 

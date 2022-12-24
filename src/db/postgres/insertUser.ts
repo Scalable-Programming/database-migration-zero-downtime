@@ -9,7 +9,8 @@ interface UserProps {
 
 export const insertPostgresUser = async (
   users: UserProps[],
-  includeCreatedAt = false
+  includeCreatedAt = false,
+  raiseOnError = false
 ) => {
   let query = format(
     `INSERT INTO users ${
@@ -24,5 +25,9 @@ export const insertPostgresUser = async (
     await postgresClient.query(query);
   } catch (error) {
     console.log("Error getting postgres users", error);
+
+    if (raiseOnError) {
+      throw new Error("Error inserting postgres users");
+    }
   }
 };

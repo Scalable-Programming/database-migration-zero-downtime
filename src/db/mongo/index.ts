@@ -1,7 +1,9 @@
 import { config } from "../../config";
 import { Collection, MongoClient } from "mongodb";
+import { UserSchema } from "./types";
 
-let mongoDbCollection: Collection;
+
+let mongoDbCollection: Collection<UserSchema>;
 
 const connect = async () => {
   const client = new MongoClient(
@@ -21,4 +23,4 @@ const connect = async () => {
 
 connect();
 
-export { mongoDbCollection };
+export { mongoDbCollection, connect };

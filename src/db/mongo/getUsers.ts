@@ -1,22 +1,45 @@
 import { mongoDbCollection } from "./index";
-import { ObjectId } from "mongodb";
+import { UserSchema } from "./types";
+import { ObjectId, WithId } from "mongodb";
 
-export const getUsers = async (lastUserId?: string, limit = 10) => {
+interface Props {
+  createdAt?: Date;
+  lastUserId?: string;
+  limit?: number;
+}
+
+export const getUsers = async ({
+  lastUserId,
+  limit = 10,
+  createdAt,
+}: Props) => {
   const aggregations = [
+    // Only for migration
+    createdAt
+      ? {
+          $match: {
+            createdAt: { $lte: createdAt },
+          },
+        }
+      : null,
+    lastUserId
+      ? {
+          $match: {
+            _id: { $gt: new ObjectId(lastUserId) },
+          },
+        }
+      : null,
     {
       $sort: {
         _id: 1,
       },
     },
-    lastUserId
-      ? {
-          _id: { $gt: new ObjectId(lastUserId) },
-        }
-      : null,
     { $limit: limit },
   ];
 
   return mongoDbCollection
-    .aggregate(aggregations.filter((aggregations) => !!aggregations))
+    .aggregate<WithId<UserSchema>>(
+      aggregations.filter((aggregations) => !!aggregations)
+    )
     .toArray();
 };
