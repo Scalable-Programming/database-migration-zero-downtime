@@ -1,7 +1,7 @@
 import { mongoDbCollection } from "./index";
 import { ObjectId } from "mongodb";
 
-export const getUsers = async (lastUserId?: string) => {
+export const getUsers = async (lastUserId?: string, limit = 10) => {
   const aggregations = [
     {
       $sort: {
@@ -13,7 +13,7 @@ export const getUsers = async (lastUserId?: string) => {
           _id: { $gt: new ObjectId(lastUserId) },
         }
       : null,
-    { $limit: 10 },
+    { $limit: limit },
   ];
 
   return mongoDbCollection
